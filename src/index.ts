@@ -1,6 +1,6 @@
 import { greeter } from './hello';
-import { fastAwaitTest } from './fast-await';
-import { slowAwaitTest } from './slow-await';
+import { fastAwaitTest, fastAwaitWithSlowRejectTest, fastAwaitWithFastRejectTest } from './fast-await';
+import { slowAwaitTest, slowAwaitErrorTest } from './slow-await';
 
 async function hello() {
   return 'Hello';
@@ -15,4 +15,10 @@ async function hello() {
 
   await fastAwaitTest();
   await slowAwaitTest();
+
+  await  fastAwaitWithSlowRejectTest();
+  await  slowAwaitErrorTest();
+
+  await fastAwaitWithFastRejectTest();
+
 })();

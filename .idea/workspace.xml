@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2f235c1e-2b52-4208-8477-e3e054078f18" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/fast-await.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/slow-await.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/timer.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__tests__/hello.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/__tests__/hello.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hello.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/hello.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fast-await.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fast-await.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/slow-await.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/slow-await.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/timer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/timer.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +58,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1620956653368</updated>
-      <workItem from="1620956655238" duration="2669000" />
+      <workItem from="1620956655238" duration="3194000" />
+      <workItem from="1620959889099" duration="982000" />
     </task>
     <task id="LOCAL-00001" summary="chore: IDE config">
       <created>1620956757393</created>
@@ -71,7 +68,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620956757393</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="feat: fast and slow await">
+      <created>1620959505012</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1620959505012</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -79,6 +83,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="chore: IDE config" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: IDE config" />
+    <MESSAGE value="feat: fast and slow await" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: fast and slow await" />
   </component>
 </project>
