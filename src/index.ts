@@ -4,4 +4,3 @@ import { greeter } from './hello';
   const rsp = await greeter('z');
   console.log(rsp);
 })()
-
