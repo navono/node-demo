@@ -1,6 +1,6 @@
 {
   "name": "node-typescript-boilerplate",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
   "engines": {
     "node": ">= 14.16 <15"
@@ -30,8 +30,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "author": "Jakub Synowiec <github@jakubsynowiec.info>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "dependencies": {
     "tslib": "~2.2.0"
   },
