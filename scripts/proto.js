@@ -11,12 +11,23 @@ const PROTOC_GEN_TS_PATH = path.join(__dirname, '../node_modules/.bin/protoc-gen
 
 rimraf.sync(`${MODEL_DIR}/*`);
 
+const relativeProtoFiles = shell.exec(`find ./proto -name "*.proto"`, {silent:true}).stdout;
+
+let absProtoFiles = [];
+relativeProtoFiles.split('\n').forEach(file => {
+  if (file.length !== 0) {
+    absProtoFiles.push(path.join(__dirname, '../', file));
+  }
+})
+
+console.log(absProtoFiles);
+
 const protoConfig = [
   `--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" `,
   `--grpc_out="grpc_js:${MODEL_DIR}" `,
   `--js_out="import_style=commonjs,binary:${MODEL_DIR}" `,
   `--ts_out="grpc_js:${MODEL_DIR}" `,
-  `--proto_path ${PROTO_DIR} ${PROTO_DIR}/*.proto`
+  `--proto_path ${PROTO_DIR} ${absProtoFiles.join(' ')}`
 ];
 
 // https://github.com/agreatfool/grpc_tools_node_protoc_ts/tree/master/examples
