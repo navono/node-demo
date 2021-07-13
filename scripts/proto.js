@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const shell = require('shelljs');
 const rimraf = require('rimraf');
 
@@ -6,10 +7,14 @@ const rimraf = require('rimraf');
 process.env.PATH += (path.delimiter + path.join(process.cwd(), 'node_modules', '.bin'));
 
 const PROTO_DIR = path.join(__dirname, '../proto');
-const MODEL_DIR = path.join(__dirname, '../src/proto');
+const OUT_DIR = path.join(__dirname, '../src/proto');
 const PROTOC_GEN_TS_PATH = path.join(__dirname, '../node_modules/.bin/protoc-gen-ts.cmd');
 
-rimraf.sync(`${MODEL_DIR}/*`);
+if (fs.existsSync(OUT_DIR)) {
+  rimraf.sync(`${OUT_DIR}/*`);
+} else {
+  fs.mkdirSync(OUT_DIR);
+}
 
 const relativeProtoFiles = shell.exec(`find ./proto -name "*.proto"`, {silent:true}).stdout;
 
@@ -24,9 +29,10 @@ console.log(absProtoFiles);
 
 const protoConfig = [
   `--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" `,
-  `--grpc_out="grpc_js:${MODEL_DIR}" `,
-  `--js_out="import_style=commonjs,binary:${MODEL_DIR}" `,
-  `--ts_out="grpc_js:${MODEL_DIR}" `,
+  `--cpp_out=${OUT_DIR}`,
+  `--grpc_out="grpc_js:${OUT_DIR}" `,
+  `--js_out="import_style=commonjs,binary:${OUT_DIR}" `,
+  `--ts_out="grpc_js:${OUT_DIR}" `,
   `--proto_path ${PROTO_DIR} ${absProtoFiles.join(' ')}`
 ];
 
