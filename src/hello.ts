@@ -11,16 +11,12 @@ export enum Delays {
  * Returns a Promise<string> that resolves after given time.
  *
  * @param {string} name - A name.
- * @param {number=} [delay=Delays.Medium] - Number of milliseconds to delay resolution of the Promise.
+ * @param {number=} [delay=Delays.Medium]
+ *        Number of milliseconds to delay resolution of the Promise.
  * @returns {Promise<string>}
  */
-function delayedHello(
-  name: string,
-  delay: number = Delays.Medium,
-): Promise<string> {
-  return new Promise((resolve: (value?: string) => void) =>
-    setTimeout(() => resolve(`Hello, ${name}`), delay),
-  );
+function delayedHello(name: string, delay: number = Delays.Medium): Promise<string> {
+  return new Promise((resolve: (value?: string) => void) => setTimeout(() => resolve(`Hello, ${name}`), delay));
 }
 
 // Below are examples of using ESLint errors suppression
@@ -28,5 +24,5 @@ function delayedHello(
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function greeter(name: string) {
-  return await delayedHello(name, Delays.Short);
+  return delayedHello(name, Delays.Short);
 }

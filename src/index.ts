@@ -1,6 +1,6 @@
 import { greeter } from './hello';
 
-(async ()=> {
+(async () => {
   const rsp = await greeter('z');
   console.log(rsp);
-})()
+})();
