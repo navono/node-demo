@@ -21,6 +21,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {
-    'class-methods-use-this': 'off'
+    'class-methods-use-this': 'off',
+    'import/no-cycle': 'warn'
   },
 };
