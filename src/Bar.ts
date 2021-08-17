@@ -1,7 +1,7 @@
-import {Foo} from "./Foo";
-import {injectable} from "tsyringe";
+import { injectable } from 'tsyringe';
+import Foo from './Foo';
 
 @injectable()
-export class Bar {
+export default class Bar {
   constructor(public myFoo: Foo) {}
 }

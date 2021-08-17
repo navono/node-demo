@@ -20,5 +20,7 @@ module.exports = {
     project: 'tsconfig.json',
   },
   plugins: ['react', '@typescript-eslint'],
-  rules: {},
+  rules: {
+    'class-methods-use-this': 'off'
+  },
 };

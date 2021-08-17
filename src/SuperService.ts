@@ -1,3 +1,3 @@
 export interface SuperService {
-  hello(name: string): string
+  hello(name: string): string;
 }
