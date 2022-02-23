@@ -61,6 +61,13 @@ export default class ProjectService extends Service {
                 });
             },
           },
+
+          has: {
+            params: {
+              projectId: { type: 'string' },
+            },
+            handler: ctx => this.adapter.findOne({ _id: ctx.params.projectId}),
+          },
         },
 
         methods: {

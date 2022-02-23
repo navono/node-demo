@@ -36,20 +36,23 @@ export default class ApiService extends Service {
 
             aliases: {
               // Login
-              'POST /users/login': 'users.login',
+              // 'POST /users/login': 'users.login',
 
               // Users
-              'REST /users': 'users',
+              // 'REST /users': 'users',
 
               // Projects
               'REST /projects': 'projects',
 
-              // // Current user
+              // Project users
+              'REST /projects/:projectId/users': 'users',
+
+              // Current user
               // 'GET /user': 'users.me',
               // 'PUT /user': 'users.updateMyself',
 
               // Profile
-              'GET /profiles/:username': 'users.profile',
+              // 'GET /profiles/:username': 'users.profile',
             },
             /**
 					 * Before call hook. You can check the request.

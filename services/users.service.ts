@@ -24,13 +24,15 @@ export default class UserService extends Service {
 				// Available fields in the responses
 				fields: [
 					'_id',
-					'username',
+          'projectId',
+          'username',
 					'email',
 					'bio',
 				],
 
 				// Validator for the `create` & `insert` actions.
 				entityValidator: {
+          projectId: { type: 'string' },
           username: { type: 'string', min: 2, pattern: /^[a-zA-Z0-9]+$/ },
           password: { type: 'string', min: 6 },
           email: { type: 'email' },
@@ -60,12 +62,24 @@ export default class UserService extends Service {
          */
         create: {
           params: {
+            projectId: { type: 'string' },
             user: { type: 'object' },
           },
-          handler(ctx) {
+          handler: async ctx => {
             const entity = ctx.params.user;
+            const projectId = ctx.params.projectId;
+
             return this.validateEntity(entity)
-              .then(() => {
+              .then(async () => {
+                if (projectId) {
+                  const result = await ctx.call('projects.has', { projectId });
+                  if (!result) {
+                    return Promise.reject(new Errors.MoleculerClientError('Project not exist!', 422, '', [{ field: 'projectId', message: 'is not exist'}]));
+                  }
+
+                  return true;
+                }
+
                 if (entity.username) {
                   return this.adapter.findOne({ username: entity.username })
                     .then(found => {
@@ -83,7 +97,6 @@ export default class UserService extends Service {
                       if (found) {
                           return Promise.reject(new  Errors.MoleculerClientError('Email is exist!', 422, '', [{ field: 'email', message: 'is exist'}]));
                       }
-
                       return true;
                   });
                 }
@@ -99,6 +112,47 @@ export default class UserService extends Service {
                   .then(user => this.transformEntity(user, true, ctx.meta.token))
                   .then(json => this.entityChanged('created', json, ctx).then(() => json));
               });
+          },
+        },
+
+        get: {
+          auth: 'required',
+          cache: {
+                //  Generate cache key from "limit", "offset" params and "user.id" meta
+                keys: ['projectId','id'],
+            },
+          params: {
+            projectId: { type: 'string' },
+            id: { type: 'string' },
+          },
+          handler: ctx => {
+            const projectId = ctx.params.projectId;
+            const userId = ctx.params.id;
+
+            return Promise.resolve(projectId)
+              .then(async () => {
+                if (projectId) {
+                  const result = await ctx.call('projects.has', { projectId });
+                  if (!result) {
+                    return Promise.reject(new Errors.MoleculerClientError('Project not exist!', 422, '', [{ field: 'projectId', message: 'is not exist'}]));
+                  }
+
+                  return true;
+                }
+
+                return  Promise.reject(
+                  new Errors.MoleculerClientError('Project id not specified!', 422, '', [{ field: 'projectId', message: 'is not specified'}]),
+                );
+              })
+              .then(() => this.adapter.findOne({ _id: userId }))
+              .then(user => {
+                if (!this.transformEntity(user, true, ctx.meta.token)) {
+                  return Promise.reject(new Errors.MoleculerClientError('User is not exist!', 422, '', [{ field: 'id', message: 'is not exist'}]));
+                }
+
+                return user;
+              });
+
           },
         },
 
@@ -185,22 +239,22 @@ export default class UserService extends Service {
          * @returns {Object} User entity
          */
         profile: {
-        cache: {
-          keys: ['#token', 'username'],
-        },
-        params: {
-          username: { type: 'string' },
-        },
-        handler(ctx) {
-          return this.adapter.findOne({ username: ctx.params.username })
-          .then(user => {
-            if (!user)
-              {return this.Promise.reject(new Errors.MoleculerClientError('User not found!', 404));}
+          cache: {
+            keys: ['#token', 'username'],
+          },
+          params: {
+            username: { type: 'string' },
+          },
+          handler(ctx) {
+            return this.adapter.findOne({ username: ctx.params.username })
+            .then(user => {
+              if (!user)
+                {return this.Promise.reject(new Errors.MoleculerClientError('User not found!', 404));}
 
-            return this.transformDocuments(ctx, {}, user);
-          })
-          .then(user => this.transformProfile(ctx, user, ctx.meta.user));
-        },
+              return this.transformDocuments(ctx, {}, user);
+            })
+            .then(user => this.transformProfile(ctx, user, ctx.meta.user));
+          },
         },
       },
 
@@ -235,9 +289,11 @@ export default class UserService extends Service {
             user.image = user.image || '';
             if (withToken)
               {user.token = token || this.generateJWT(user);}
+
+              return { user };
           }
 
-          return { user };
+          return null;
         },
 
         /**

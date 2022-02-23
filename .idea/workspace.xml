@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2bf7fa11-167f-47e4-9514-b91053547675" name="Default Changelist" comment="feat: node gRPC">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/api.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/projects.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/projects.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/users.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/users.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +62,7 @@
       <workItem from="1642222696344" duration="1005000" />
       <workItem from="1645582057585" duration="2823000" />
       <workItem from="1645593780915" duration="2202000" />
+      <workItem from="1645606933390" duration="368000" />
     </task>
     <servers />
   </component>
@@ -81,5 +83,17 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: node gRPC" />
     <option name="LAST_COMMIT_MESSAGE" value="feat: node gRPC" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/services/users.service.ts</url>
+          <line>120</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
