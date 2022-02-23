@@ -1,6 +1,6 @@
-// Import {IncomingMessage} from "http";
-// Import {Service, ServiceBroker, Context} from "moleculer";
-import { Service, ServiceBroker } from 'moleculer';
+// Import {IncomingMessage} from 'http';
+import * as R from 'ramda';
+import {Service, ServiceBroker, Context} from 'moleculer';
 import * as ApiGateway from 'moleculer-web';
 
 export default class ApiService extends Service {
@@ -26,16 +26,26 @@ export default class ApiService extends Service {
             mergeParams: true,
 
             // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
-            authentication: false,
-
-            // Enable authorization. Implement the logic into `authorize` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authorization
-            authorization: false,
+            authentication: true,
 
             // The auto-alias feature allows you to declare your route alias directly in your services.
             // The gateway will dynamically build the full routes from service schema.
-            autoAliases: true,
+            AutoAliases: true,
 
-            aliases: {},
+            aliases: {
+              // Login
+              'POST /users/login': 'users.login',
+
+              // Users
+              'REST /users': 'users',
+
+              // Current user
+              'GET /user': 'users.me',
+              'PUT /user': 'users.updateMyself',
+
+              // Profile
+				      'GET /profiles/:username': 'users.profile',
+            },
             /**
 					 * Before call hook. You can check the request.
 					 * @param {Context} ctx
@@ -111,26 +121,26 @@ export default class ApiService extends Service {
 				 * @param {any} route
 				 * @param {IncomingMessage} req
 				 * @returns {Promise}
-
-				async authenticate (ctx: Context, route: any, req: IncomingMessage): Promise < any >  => {
+				 */
+				async authenticate(_ctx: Context, _route: any, req: any): Promise < any > {
 					// Read the token from header
 					const auth = req.headers.authorization;
 
-					if (auth && auth.startsWith("Bearer")) {
+					if (auth && auth.startsWith('Bearer')) {
 						const token = auth.slice(7);
 
 						// Check the token. Tip: call a service which verify the token. E.g. `accounts.resolveToken`
-						if (token === "123456") {
+						if (token === '123456') {
 							// Returns the resolved user. It will be set to the `ctx.meta.user`
 							return {
 								id: 1,
-								name: "John Doe",
+								name: 'John Doe',
 							};
 
 						} else {
 							// Invalid token
-							throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN, {
-								error: "Invalid Token",
+							throw new (ApiGateway as any).Errors.UnAuthorizedError((ApiGateway as any).Errors.ERR_INVALID_TOKEN, {
+								error: 'Invalid Token',
 							});
 						}
 
@@ -140,7 +150,6 @@ export default class ApiService extends Service {
 						return null;
 					}
 				},
-				 */
         /**
 				 * Authorize the request. Check that the authenticated user has right to access the resource.
 				 *
@@ -150,22 +159,43 @@ export default class ApiService extends Service {
 				 * @param {Object} route
 				 * @param {IncomingMessage} req
 				 * @returns {Promise}
+        */
+        async authorize(ctx: Context<any, {user: string; token: string}>, _route: Record<string, undefined>, req: any): Promise<any> {
+          let token;
+          if (req.headers.authorization) {
+            const type = req.headers.authorization.split(' ')[0];
+            if (type === 'Token' || type === 'Bearer')
+              {token = req.headers.authorization.split(' ')[1];}
+          }
 
-				async authorize (ctx: Context < any, {
-					user: string;
-				} > , route: Record<string, undefined>, req: IncomingMessage): Promise < any > => {
-					// Get the authenticated user.
-					const user = ctx.meta.user;
+          return this.Promise.resolve(token)
+            .then(tokenValue => {
+              if (tokenValue) {
+                // Verify JWT token
+                return ctx.call('users.resolveToken', { token })
+                  .then((user: any) => {
+                    if (user) {
+                      this.logger.info('Authenticated via JWT: ', user.username);
+                      // Reduce user fields (it will be transferred to other nodes)
+                      ctx.meta.user = R.pick(['_id', 'username', 'email', 'image'], user);
+                      ctx.meta.token = tokenValue;
+                    }
+                    return user;
+                  })
+                  .catch(err =>
+                    // Ignored because we continue processing if user is not exist
+                    console.error(err),
+                  );
+              }
 
-					// It check the `auth` property in action schema.
-					// @ts-ignore
-					if (req.$action.auth === "required" && !user) {
-						throw new ApiGateway.Errors.UnAuthorizedError("NO_RIGHTS", {
-							error: "Unauthorized",
-						});
-					}
-				},
-				 */
+              return Promise.reject('BAD TOKEN');
+            })
+            .then(user => {
+              if (req.$endpoint.action.auth === 'required' && !user) {
+                return this.Promise.reject(new (ApiGateway as any).Errors.UnAuthorizedError('NO_RIGHTS', ''));
+              }
+            });
+        },
       },
     });
   }
