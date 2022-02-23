@@ -5,6 +5,8 @@
   "scripts": {
     "prestart": "npm run lint && npm run build",
     "start": "node dist/index.js",
+    "run:dev": "ts-node ./node_modules/moleculer/bin/moleculer-runner.js --repl --hot --config moleculer.config.ts services/**/*.service.ts",
+    "run": "moleculer-runner",
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
@@ -23,10 +25,9 @@
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jest": "^26.1.1",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
     "jest": "^27.5.1",
+    "moleculer-repl": "^0.7.0",
     "npm-check": "^5.9.2",
     "prettier": "~2.5.1",
     "rimraf": "~3.0.2",
@@ -37,9 +38,34 @@
   },
   "license": "MIT",
   "dependencies": {
+    "moleculer": "^0.14.19",
+    "moleculer-db": "^0.8.17",
+    "moleculer-db-adapter-sequelize": "^0.2.13",
+    "moleculer-web": "^0.10.4",
+    "sqlite3": "^5.0.2",
     "tslib": "~2.3.1"
   },
   "volta": {
     "node": "14.16.1"
+  },
+  "jest": {
+    "coverageDirectory": "<rootDir>/coverage",
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.spec.(ts|js)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    }
   }
 }

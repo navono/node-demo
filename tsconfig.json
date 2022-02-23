@@ -6,7 +6,6 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "importHelpers": true,
-    "jsx": "react",
     "alwaysStrict": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
@@ -19,7 +18,7 @@
     "strictNullChecks": false
   },
   "include": [
-    "src/**/*",
+    "services/**/*",
     "__tests__/**/*"
   ]
 }
