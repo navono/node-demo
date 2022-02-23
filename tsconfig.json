@@ -17,8 +17,8 @@
     "noImplicitThis": false,
     "strictNullChecks": false
   },
-  "include": [
-    "services/**/*",
-    "__tests__/**/*"
-  ]
+  "exclude": [
+		"node_modules/**/*",
+		"test"
+	]
 }

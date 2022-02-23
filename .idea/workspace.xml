@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2bf7fa11-167f-47e4-9514-b91053547675" name="Default Changelist" comment="feat: node gRPC">
+      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.prettierrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mixins/db.mixin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/mixins/db.mixin.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moleculer.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/moleculer.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/api.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/products.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/products.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.release.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.release.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +42,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/index.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -43,7 +51,7 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
-    <configuration name="debug" type="NodeJSConfigurationType" node-parameters="--require ts-node/register" path-to-js-file="src/index.ts" working-dir="$PROJECT_DIR$">
+    <configuration name="debug" type="NodeJSConfigurationType" application-parameters="--hot --repl --config moleculer.config.ts services/**/*.service.ts" node-parameters="--require ts-node/register" path-to-js-file="node_modules/moleculer/bin/moleculer-runner.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
   </component>
@@ -58,6 +66,7 @@
       <workItem from="1642222453679" duration="16000" />
       <workItem from="1642222486640" duration="189000" />
       <workItem from="1642222696344" duration="1005000" />
+      <workItem from="1645582057585" duration="2227000" />
     </task>
     <servers />
   </component>
@@ -78,5 +87,47 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: node gRPC" />
     <option name="LAST_COMMIT_MESSAGE" value="feat: node gRPC" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/services/api.service.ts</url>
+          <line>9</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/mixins/db.mixin.ts</url>
+          <line>16</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/mixins/db.mixin.ts</url>
+          <line>65</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/moleculer/src/runner.js</url>
+          <line>412</line>
+          <properties lambdaOrdinal="0" />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/moleculer/src/service.js</url>
+          <line>598</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/moleculer/src/service.js</url>
+          <line>624</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

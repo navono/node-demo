@@ -1,9 +1,7 @@
-'use strict';
-
 import { existsSync } from 'fs';
 import { sync } from 'mkdirp';
 import { Context, Service, ServiceSchema } from 'moleculer';
-import DbService from 'moleculer-db';
+import * as DbService from 'moleculer-db';
 
 export default class Connection implements Partial<ServiceSchema>, ThisType<Service> {
   private cacheCleanEventName: string;
@@ -33,11 +31,11 @@ export default class Connection implements Partial<ServiceSchema>, ThisType<Serv
         /**
          * Send a cache clearing event when an entity changed.
          *
-         * @param {String} type
+         * @param {String} _type
          * @param {any} json
          * @param {Context} ctx
          */
-        entityChanged: async (type: string, json: any, ctx: Context) => {
+        entityChanged: async (_type: string, _json: any, ctx: Context) => {
           await ctx.broadcast(this.cacheCleanEventName);
         },
       },
@@ -56,6 +54,14 @@ export default class Connection implements Partial<ServiceSchema>, ThisType<Serv
     };
   }
 
+  public get _collection(): string {
+    return this.collection;
+  }
+
+  public set _collection(value: string) {
+    this.collection = value;
+  }
+
   public start() {
     if (process.env.MONGO_URI) {
       // Mongo adapter
@@ -65,7 +71,6 @@ export default class Connection implements Partial<ServiceSchema>, ThisType<Serv
       this.schema.collection = this.collection;
     } else if (process.env.NODE_ENV === 'test') {
       // NeDB memory adapter for testing
-      // @ts-ignore
       this.schema.adapter = new DbService.MemoryAdapter();
     } else {
       // NeDB file DB adapter
@@ -74,18 +79,9 @@ export default class Connection implements Partial<ServiceSchema>, ThisType<Serv
       if (!existsSync('./data')) {
         sync('./data');
       }
-      // @ts-ignore
       this.schema.adapter = new DbService.MemoryAdapter({ filename: `./data/${this.collection}.db` });
     }
 
     return this.schema;
-  }
-
-  public get _collection(): string {
-    return this.collection;
-  }
-
-  public set _collection(value: string) {
-    this.collection = value;
   }
 }
