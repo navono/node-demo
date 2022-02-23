@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import Bar from './Bar';
+import SP from './base-derived-integrate';
 
 // import Client from './Client';
 // import TestService from './TestService';
@@ -8,7 +9,10 @@ import Bar from './Bar';
 
 const myBar = container.resolve(Bar);
 myBar.hello();
-myBar.foo.hello();
+// myBar.foo.hello();
+
+const sp = new SP();
+sp.hello();
 
 // container.register("SuperService", {
 //   // useClass: TestService
