@@ -1,7 +1,7 @@
-// Import {IncomingMessage} from 'http';
 import * as R from 'ramda';
 import {Service, ServiceBroker, Context} from 'moleculer';
 import * as ApiGateway from 'moleculer-web';
+import * as jwt from 'jsonwebtoken';
 
 export default class ApiService extends Service {
   public constructor(broker: ServiceBroker) {
@@ -123,8 +123,6 @@ export default class ApiService extends Service {
 				 * Check the token value & resolve the user by the token.
 				 * The resolved user will be available in `ctx.meta.user`
 				 *
-				 * PLEASE NOTE, IT'S JUST AN EXAMPLE IMPLEMENTATION. DO NOT USE IN PRODUCTION!
-				 *
 				 * @param {Context} ctx
 				 * @param {any} route
 				 * @param {IncomingMessage} req
@@ -134,29 +132,29 @@ export default class ApiService extends Service {
 					// Read the token from header
 					const auth = req.headers.authorization;
 
-					if (auth && auth.startsWith('Bearer')) {
-						const token = auth.slice(7);
+          try {
+            const decoded = jwt.verify(auth, 'jwt-conduit-secret');
+            if (!decoded) {
+              throw new (ApiGateway as any).Errors.UnAuthorizedError((ApiGateway as any).Errors.ERR_INVALID_TOKEN, {
+                error: 'Invalid Token',
+              });
+            }
 
-						// Check the token. Tip: call a service which verify the token. E.g. `accounts.resolveToken`
-						if (token === '123456') {
-							// Returns the resolved user. It will be set to the `ctx.meta.user`
-							return {
-								id: 1,
-								name: 'John Doe',
-							};
 
-						} else {
-							// Invalid token
-							throw new (ApiGateway as any).Errors.UnAuthorizedError((ApiGateway as any).Errors.ERR_INVALID_TOKEN, {
-								error: 'Invalid Token',
-							});
-						}
+            const now = Math.floor(Date.now() / 1000);
+            if (decoded.exp <= now) {
+              throw new (ApiGateway as any).Errors.UnAuthorizedError((ApiGateway as any).Errors.ERR_INVALID_TOKEN, {
+                error: 'Token Expired',
+              });
+            }
 
-					} else {
-						// No token. Throw an error or do nothing if anonymous access is allowed.
-						// Throw new E.UnAuthorizedError(E.ERR_NO_TOKEN);
-						return null;
-					}
+            return decoded;
+          } catch(err) {
+            // Err
+            throw new (ApiGateway as any).Errors.UnAuthorizedError((ApiGateway as any).Errors.ERR_INVALID_TOKEN, {
+              error: err,
+            });
+          }
 				},
         /**
 				 * Authorize the request. Check that the authenticated user has right to access the resource.
