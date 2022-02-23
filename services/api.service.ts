@@ -32,6 +32,8 @@ export default class ApiService extends Service {
             // The gateway will dynamically build the full routes from service schema.
             AutoAliases: true,
 
+            Authorization: true,
+
             aliases: {
               // Login
               'POST /users/login': 'users.login',
@@ -39,12 +41,15 @@ export default class ApiService extends Service {
               // Users
               'REST /users': 'users',
 
-              // Current user
-              'GET /user': 'users.me',
-              'PUT /user': 'users.updateMyself',
+              // Projects
+              'REST /projects': 'projects',
+
+              // // Current user
+              // 'GET /user': 'users.me',
+              // 'PUT /user': 'users.updateMyself',
 
               // Profile
-				      'GET /profiles/:username': 'users.profile',
+              'GET /profiles/:username': 'users.profile',
             },
             /**
 					 * Before call hook. You can check the request.
@@ -54,9 +59,9 @@ export default class ApiService extends Service {
 					 * @param {ServerResponse} res
 					 * @param {Object} data
 					onBeforeCall(ctx: Context<any,{userAgent: string}>,
-					 route: object, req: IncomingMessage, res: ServerResponse) {
-					  Set request headers to context meta
-					  ctx.meta.userAgent = req.headers["user-agent"];
+            route: object, req: IncomingMessage, res: ServerResponse) {
+            Set request headers to context meta
+            ctx.meta.userAgent = req.headers["user-agent"];
 					},
 					 */
 

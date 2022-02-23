@@ -5,20 +5,21 @@ import * as jwt from 'jsonwebtoken';
 import DbConnection from '../mixins/db.mixin';
 
 export default class UserService extends Service {
-  private DbMixin = new DbConnection('users').start();
+  private dbMixin = new DbConnection('users').start();
 
   /**
    * Constructor
    */
   public constructor(public broker: ServiceBroker) {
     super(broker);
+
     this.parseServiceSchema({
       name: 'users',
-      mixins: [this.DbMixin],
+      mixins: [this.dbMixin],
 
       settings: {
         /** Secret for JWT */
-    		JWT_SECRET: process.env.JWT_SECRET || 'jwt-conduit-secret',
+        JWT_SECRET: process.env.JWT_SECRET || 'jwt-conduit-secret',
 
 				// Available fields in the responses
 				fields: [
@@ -72,7 +73,8 @@ export default class UserService extends Service {
                         return Promise.reject(new Errors.MoleculerClientError('Username is exist!', 422, '', [{ field: 'username', message: 'is exist'}]));
                       }
                       return true;
-                    });}
+                  });
+                }
               })
               .then(() => {
                 if (entity.email) {
@@ -83,7 +85,8 @@ export default class UserService extends Service {
                       }
 
                       return true;
-                    });}
+                  });
+                }
               })
               .then(() => {
                 entity.password = bcrypt.hashSync(entity.password, 10);
