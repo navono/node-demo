@@ -28,11 +28,11 @@ export default class ApiService extends Service {
             // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
             // Authentication: true,
 
+            authorization: true,
+
             // The auto-alias feature allows you to declare your route alias directly in your services.
             // The gateway will dynamically build the full routes from service schema.
-            AutoAliases: true,
-
-            Authorization: true,
+            autoAliases: true,
 
             aliases: {
               // Projects
@@ -40,9 +40,21 @@ export default class ApiService extends Service {
 
               // Project users
               'REST /projects/:projectId/users': 'users',
+              // 'GET /projects/:projectId/users': 'users.list',
+              // 'GET /projects/:projectId/users/:userId': 'users.get',
+              // 'POST /projects/:projectId/users': 'users.create',
+              // 'PUT /projects/:projectId/users/:userId': 'users.update',
+              // 'DELETE /projects/:projectId/users/:userId': 'users.remote',
 
-              // Login
+              // Project login
               'POST /projects/:projectId/login': 'users.login',
+
+              // Project models
+              'REST /projects/:projectId/models': 'models',
+              // 'GET /projects/:projectId/models': 'models.list',
+              // 'POST /projects/:projectId/models': 'models.create',
+              // 'PUT /projects/:projectId/models/:modelId': 'models.update',
+              // 'DELETE /projects/:projectId/models/:modelId': 'models.remote',
 
               // Current user
               // 'GET /user': 'users.me',
@@ -189,11 +201,12 @@ export default class ApiService extends Service {
                   );
               }
 
-              return Promise.reject('BAD TOKEN');
+              return null;
             })
             .then(user => {
+              // 用来控制 Service 单个 action 是否需要认证
               if (req.$endpoint.action.auth === 'required' && !user) {
-                return this.Promise.reject(new (ApiGateway as any).Errors.UnAuthorizedError('NO_RIGHTS', ''));
+                return this.Promise.reject(new (ApiGateway as any).Errors.UnAuthorizedError('用户未登录', ''));
               }
             });
         },

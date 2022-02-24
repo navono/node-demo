@@ -62,6 +62,7 @@ export default class UserService extends Service {
          * @returns {Object} Created entity & token
          */
         create: {
+          auth: 'required',
           params: {
             projectId: { type: 'string' },
             user: { type: 'object' },

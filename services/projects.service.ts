@@ -107,6 +107,9 @@ export default class ProjectService extends Service {
           },
 
           has: {
+            cache: {
+              keys: ['projectId'],
+            },
             params: {
               projectId: { type: 'string' },
             },
