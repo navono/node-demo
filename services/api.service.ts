@@ -35,17 +35,14 @@ export default class ApiService extends Service {
             Authorization: true,
 
             aliases: {
-              // Login
-              // 'POST /users/login': 'users.login',
-
-              // Users
-              // 'REST /users': 'users',
-
               // Projects
               'REST /projects': 'projects',
 
               // Project users
               'REST /projects/:projectId/users': 'users',
+
+              // Login
+              'POST /projects/:projectId/login': 'users.login',
 
               // Current user
               // 'GET /user': 'users.me',
@@ -158,8 +155,6 @@ export default class ApiService extends Service {
 				},
         /**
 				 * Authorize the request. Check that the authenticated user has right to access the resource.
-				 *
-				 * PLEASE NOTE, IT'S JUST AN EXAMPLE IMPLEMENTATION. DO NOT USE IN PRODUCTION!
 				 *
 				 * @param {Context} ctx
 				 * @param {Object} route

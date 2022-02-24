@@ -226,20 +226,30 @@ export default class UserService extends Service {
               email: { type: 'email' },
               password: { type: 'string', min: 1 },
             }},
+            projectId: { type: 'string' },
           },
           handler(ctx) {
-            const { email, password } = ctx.params.user;
+            const entity = ctx.params.user;
+            const projectId = ctx.params.projectId;
 
-            return this.Promise.resolve()
-              .then(() => this.adapter.findOne({ email }))
-              .then(user => {
-                if (!user) {
-                    return this.Promise.reject
-                    (new Errors.MoleculerClientError('Email or password is invalid!', 422, '', [{ field: 'email', message: 'is not found'}]),
-                    );
+            return Promise.resolve()
+              .then(async () => {
+                if (projectId) {
+                  const result = await ctx.call('projects.has', { projectId });
+                  if (!result) {
+                    return Promise.reject(new Errors.MoleculerClientError('Project not exist!', 422, '', [{ field: 'projectId', message: 'is not exist'}]));
+                  }
                 }
 
-                return bcrypt.compare(password, user.password).then(res => {
+                return this.adapter.findOne({ email: entity.email });
+              })
+              .then(user => {
+                if (!user) {
+                    return this.Promise.
+                      reject(new Errors.MoleculerClientError('Email or password is invalid!', 422, '', [{ field: 'email', message: 'is not found'}]));
+                }
+
+                return bcrypt.compare(entity.password, user.password).then(res => {
                   if (!res) {
                     return Promise.reject(new Errors.MoleculerClientError('Wrong password!', 422, '', [{ field: 'email', message: 'is not found'}]));
                   }
@@ -271,9 +281,9 @@ export default class UserService extends Service {
           handler(ctx) {
             return new this.Promise((resolve, reject) => {
               jwt.verify(ctx.params.token, this.settings.JWT_SECRET, (err, decoded) => {
-                if (err)
-                  {return reject(err);}
-
+                if (err) {
+                  return reject(err);
+                }
                 resolve(decoded);
               });
 
@@ -304,8 +314,9 @@ export default class UserService extends Service {
           handler(ctx) {
             return this.adapter.findOne({ username: ctx.params.username })
             .then(user => {
-              if (!user)
-                {return this.Promise.reject(new Errors.MoleculerClientError('User not found!', 404));}
+              if (!user) {
+                return this.Promise.reject(new Errors.MoleculerClientError('User not found!', 404));
+              }
 
               return this.transformDocuments(ctx, {}, user);
             })
