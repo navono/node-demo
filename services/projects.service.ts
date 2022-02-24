@@ -62,6 +62,50 @@ export default class ProjectService extends Service {
             },
           },
 
+          list: {
+            cache: {
+              keys: [ 'projects', 'limit', 'offset'],
+            },
+            params: {
+              limit: { type: 'number', optional: true, convert: true },
+              offset: { type: 'number', optional: true, convert: true },
+            },
+            handler: ctx => {
+              const limit = ctx.params.limit ? Number(ctx.params.limit) : 20;
+              const offset = ctx.params.offset ? Number(ctx.params.offset) : 0;
+
+              const params = {
+                limit,
+                offset,
+                sort: ['-createdAt'],
+                populate: ['projects'],
+                query: {},
+              };
+              let countParams;
+
+              return Promise.resolve()
+                .then(() => {
+                  countParams = Object.assign({}, params);
+                  // Remove pagination params
+                  if (countParams && countParams.limit) {
+                    countParams.limit = null;
+                  }
+                  if (countParams && countParams.offset) {
+                    countParams.offset = null;
+                  }
+                })
+                .then(() => Promise.all([
+                  // Get rows
+                  this.adapter.find(params),
+
+                  // Get count of all rows
+                  this.adapter.count(countParams),
+
+                ])).then(res => res[0],
+              );
+            },
+          },
+
           has: {
             params: {
               projectId: { type: 'string' },

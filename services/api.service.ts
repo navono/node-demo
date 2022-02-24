@@ -26,7 +26,7 @@ export default class ApiService extends Service {
             mergeParams: true,
 
             // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
-            authentication: true,
+            // Authentication: true,
 
             // The auto-alias feature allows you to declare your route alias directly in your services.
             // The gateway will dynamically build the full routes from service schema.
@@ -68,7 +68,7 @@ export default class ApiService extends Service {
 					},
 					 */
 
-            /**
+          /**
 					 * After call hook. You can modify the data.
 					 * @param {Context} ctx
 					 * @param {Object} route
@@ -76,10 +76,10 @@ export default class ApiService extends Service {
 					 * @param {ServerResponse} res
 					 * @param {Object} data
 					 *
-					 onAfterCall(ctx: Context, route: object, req: IncomingMessage, res: ServerResponse, data: object) {
-					// Async function which return with Promise
-					return doSomething(ctx, res, data);
-				},
+            onAfterCall(ctx: Context, route: object, req: IncomingMessage, res: ServerResponse, data: object) {
+              // Async function which return with Promise
+              return doSomething(ctx, res, data);
+            },
 					 */
 
             // Calling options. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Calling-options

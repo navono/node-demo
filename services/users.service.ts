@@ -28,11 +28,12 @@ export default class UserService extends Service {
           'username',
 					'email',
 					'bio',
+          'createdAt',
+          'updatedAt',
 				],
 
 				// Validator for the `create` & `insert` actions.
 				entityValidator: {
-          projectId: { type: 'string' },
           username: { type: 'string', min: 2, pattern: /^[a-zA-Z0-9]+$/ },
           password: { type: 'string', min: 6 },
           email: { type: 'email' },
@@ -104,8 +105,10 @@ export default class UserService extends Service {
               .then(() => {
                 entity.password = bcrypt.hashSync(entity.password, 10);
                 entity.bio = entity.bio || '';
+                entity.projectId = projectId;
                 entity.image = entity.image || null;
                 entity.createdAt = new Date();
+                entity.updatedAt = new Date();
 
                 return this.adapter.insert(entity)
                   .then(doc => this.transformDocuments(ctx, {}, doc))
@@ -118,9 +121,9 @@ export default class UserService extends Service {
         get: {
           auth: 'required',
           cache: {
-                //  Generate cache key from "limit", "offset" params and "user.id" meta
-                keys: ['projectId','id'],
-            },
+            //  Generate cache key from "limit", "offset" params and "user.id" meta
+            keys: ['projectId','id'],
+          },
           params: {
             projectId: { type: 'string' },
             id: { type: 'string' },
@@ -152,7 +155,60 @@ export default class UserService extends Service {
 
                 return user;
               });
+          },
+        },
 
+        list: {
+          auth: 'required',
+          cache: {
+            //  Generate cache key from "limit", "offset" params and "user.id" meta
+            keys: ['projectId'],
+          },
+          params: {
+            projectId: { type: 'string' },
+          },
+          handler: ctx => {
+            const projectId = ctx.params.projectId;
+            return Promise.resolve(projectId)
+            .then(async () => {
+              if (projectId) {
+                const result = await ctx.call('projects.has', { projectId });
+                if (!result) {
+                  return Promise.reject(new Errors.MoleculerClientError('Project not exist!', 422, '', [{ field: 'projectId', message: 'is not exist'}]));
+                }
+
+                return true;
+              }
+
+              return  Promise.reject(
+                new Errors.MoleculerClientError('Project id not specified!', 422, '', [{ field: 'projectId', message: 'is not specified'}]),
+              );
+            })
+            .then(async () => {
+              const params = {
+                limit: 10,
+                offset: 0,
+                sort: ['-createdAt'],
+                populate: ['user'],
+                query: {
+                  projectId,
+                },
+              };
+              // Let countParams;
+              // This.Promise.call([]) ;
+              return await this.adapter.find(params);
+            })
+            .then((users: any) => {
+              if (!users || users?.length === 0) {
+                return [];
+              }
+
+              // If (!this.transformEntity(user, true, ctx.meta.token)) {
+              //   Return Promise.reject(new Errors.MoleculerClientError('User is not exist!', 422, '', [{ field: 'id', message: 'is not exist'}]));
+              // }
+
+              return users;
+            });
           },
         },
 
