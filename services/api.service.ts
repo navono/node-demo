@@ -11,7 +11,7 @@ export default class ApiService extends Service {
       mixins: [ApiGateway],
       // More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html
       settings: {
-        port: process.env.PORT || 3000,
+        port: process.env.PORT || 4000,
 
         routes: [
           {
@@ -51,6 +51,7 @@ export default class ApiService extends Service {
 
               // Project models
               'REST /projects/:projectId/models': 'models',
+
               // 'GET /projects/:projectId/models': 'models.list',
               // 'POST /projects/:projectId/models': 'models.create',
               // 'PUT /projects/:projectId/models/:modelId': 'models.update',

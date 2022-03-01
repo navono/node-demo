@@ -224,7 +224,7 @@ export default class UserService extends Service {
         login: {
           params: {
             user: { type: 'object', props: {
-              email: { type: 'email' },
+              username: { type: 'string' },
               password: { type: 'string', min: 1 },
             }},
             projectId: { type: 'string' },
@@ -242,17 +242,17 @@ export default class UserService extends Service {
                   }
                 }
 
-                return this.adapter.findOne({ email: entity.email });
+                return this.adapter.findOne({ username: entity.username });
               })
               .then(user => {
                 if (!user) {
                     return this.Promise.
-                      reject(new Errors.MoleculerClientError('Email or password is invalid!', 422, '', [{ field: 'email', message: 'is not found'}]));
+                      reject(new Errors.MoleculerClientError('Email or password is invalid!', 422, '', [{ field: 'username', message: 'is not found'}]));
                 }
 
                 return bcrypt.compare(entity.password, user.password).then(res => {
                   if (!res) {
-                    return Promise.reject(new Errors.MoleculerClientError('Wrong password!', 422, '', [{ field: 'email', message: 'is not found'}]));
+                    return Promise.reject(new Errors.MoleculerClientError('Wrong password!', 422, '', [{ field: 'password', message: 'not matched'}]));
                   }
 
                   // Transform user entity (remove password and all protected fields)
