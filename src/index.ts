@@ -1,6 +1,5 @@
-import { greeter } from './hello';
+import { injectedFunc } from './func/test_func';
+// import { epicBattle } from './class/test_class';
 
-(async () => {
-  const rsp = await greeter('z');
-  console.log(rsp);
-})();
+injectedFunc();
+// console.log(epicBattle.fight());
