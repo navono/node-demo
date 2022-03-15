@@ -18,5 +18,7 @@ module.exports = {
     "plugin:jest/recommended",
     "prettier"
   ],
-  rules: {},
+  rules: {
+    '@typescript-eslint/no-namespace': 'off'
+  },
 };

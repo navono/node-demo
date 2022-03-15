@@ -1,9 +1,9 @@
 import { Container, interfaces } from 'inversify';
-import { makeLoggerMiddleware } from 'inversify-logger-middleware';
+// import { makeLoggerMiddleware } from 'inversify-logger-middleware';
 
 import { TYPES } from '../constants/types';
 
-const logger = makeLoggerMiddleware();
+// const logger = makeLoggerMiddleware();
 
 function customLogger(planAndResolve: interfaces.Next): interfaces.Next {
   return (args: interfaces.NextArgs) => {
@@ -11,7 +11,7 @@ function customLogger(planAndResolve: interfaces.Next): interfaces.Next {
 
     const nextContextInterceptor = args.contextInterceptor;
     args.contextInterceptor = (context: interfaces.Context) => {
-      console.log(context);
+      // console.log(context);
       return nextContextInterceptor(context);
     };
 
@@ -27,7 +27,7 @@ const container = new Container();
 container.applyMiddleware(customLogger);
 
 // container.applyMiddleware(logger);
-console.log(logger);
+// console.log(logger);
 
 container.bind(TYPES.something).toConstantValue('a');
 container.bind(TYPES.somethingElse).toConstantValue('b');
