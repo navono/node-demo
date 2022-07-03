@@ -57,13 +57,13 @@ describe('UsersController', () => {
   });
 
   describe('create()', () => {
-    it('should create a user', () => {
-      usersController.create(createUserDto);
-      expect(usersController.create(createUserDto)).resolves.toEqual({
+    it('should create a user', async () => {
+      const user = await usersController.create(createUserDto);
+      await expect(user).toEqual({
         id: '1',
         ...createUserDto,
       });
-      expect(usersService.create).toHaveBeenCalledWith(createUserDto);
+      await expect(usersService.create).toHaveBeenCalledWith(createUserDto);
     });
   });
 
@@ -77,7 +77,7 @@ describe('UsersController', () => {
   describe('findOne()', () => {
     it('should find a user', async () => {
       const user = await usersController.findOne(1)
-      expect(user).resolves.toEqual({
+      expect(user).toEqual({
         firstName: 'firstName #1',
         lastName: 'lastName #1',
         id: 1,

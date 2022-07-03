@@ -51,18 +51,16 @@ describe('UserService', () => {
   });
 
   describe('create()', () => {
-    it('should successfully insert a user', () => {
+    it('should successfully insert a user', async () => {
       const oneUser = {
         firstName: 'firstName #1',
         lastName: 'lastName #1',
       };
-
-      expect(
-        service.create({
-          firstName: 'firstName #1',
-          lastName: 'lastName #1',
-        }),
-      ).resolves.toEqual(oneUser);
+      const user = await service.create({
+        firstName: 'firstName #1',
+        lastName: 'lastName #1',
+      })
+      expect(user).toEqual(oneUser);
     });
   });
 
@@ -77,7 +75,7 @@ describe('UserService', () => {
     it('should get a single user', async () => {
       const repoSpy = jest.spyOn(repository, 'findOneBy');
       const user = await service.findOne(1);
-      await expect(user).resolves.toEqual(oneUser);
+      await expect(user).toEqual(oneUser);
       await expect(repoSpy).toBeCalledWith({ id: 1 });
     });
   });

@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 // import { Book } from './book.entity';
 import { UsersService } from '../src/users/users.service';
 import { User } from '../src/entity/User';
-import { createTestConfiguration } from './db';
+import { createTestConfiguration } from '../src/utils/db-test';
 
 describe('User Services', () => {
   let module: TestingModule;
