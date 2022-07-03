@@ -9,10 +9,6 @@ const dllForNode = ffi.Library(dllPath, {
 (async () => {
   const rsp = await greeter('z');
   console.log(rsp);
-
-  // current.atoi('1234'); // 1234
 })();
 
-console.log(`${__dirname}`);
-console.log('dllForNode', dllForNode);
 console.log('add', dllForNode.add(1, 2));
