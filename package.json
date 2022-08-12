@@ -32,6 +32,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "fs-extra": "^10.1.0",
+    "replace-in-file": "^6.3.5",
     "tslib": "~2.4.0"
   },
   "volta": {
