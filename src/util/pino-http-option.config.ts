@@ -6,7 +6,6 @@ export const pinoHttpOption = (
   envMode = 'development',
   log: any,
 ): pinoHttp.Options => {
-  console.error('envMode', envMode)
   return {
     customAttributeKeys: {
       // req: '请求信息',
@@ -28,33 +27,30 @@ export const pinoHttpOption = (
       return 'info';
     },
     // Define a custom success message
-    customSuccessMessage: function (req, res) {
-      if (res.statusCode === 404) {
-        return 'resource not found'
-      }
-      return `${req.method} completed`
-    },
+    // customSuccessMessage: function (req, res) {
+    //   if (res.statusCode === 404) {
+    //     return 'resource not found'
+    //   }
+    //   return `${req.method} completed`
+    // },
     // Set to `false` to prevent standard serializers from being wrapped.
     wrapSerializers: true,
     serializers: {
-      req(req: {
-        httpVersion: any;
-        raw: { httpVersion: any; params: any; query: any; body: any };
-        params: any;
-        query: any;
-        body: any;
-      }) {
+      req(req: any) {
         const retVal = {
+          client: req.remoteAddress,
+          port: req.remotePort,
+          method: req.raw.method,
+          url: req.raw.url,
           httpVersion: req.raw.httpVersion,
           params: req.raw.params,
           query: req.raw.query,
           body: req.raw.body,
+          headers: req.raw.headers
         }
         return retVal;
       },
-      res(res: any) {
-        return res;
-      },
+
       err(err: {
         params: any;
         raw: { params: any; query: any; body: any };
