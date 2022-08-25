@@ -1,0 +1,31 @@
+app:
+  # 相对于启动目录，production 环境下是在 hmiServer 启动
+  dir: '../../hmi'
+
+http:
+  host: '0.0.0.0'
+  port: 9800
+  jsonLimit: '50mb'
+  bodyLimit: '50mb'
+
+ws:
+  port: 15675
+
+db:
+  sqlit: 'hmikit.db'
+
+pic:
+  dir: './pics'
+  suffix: '.pic'
+
+auth:
+  jwtExpires: '8h'
+  jwtKey: 'secretKey'
+
+log:
+  file: './log/hmiServer.log'
+  interval: '24h'
+  fileSize: '1M'
+  maxFiles: 5
+  compress: true
+  level: 'trace'

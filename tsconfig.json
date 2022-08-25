@@ -3,12 +3,15 @@
     "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "importHelpers": true,
-    "jsx": "react",
     "alwaysStrict": true,
     "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -18,10 +21,15 @@
     "noImplicitThis": false,
     "strictNullChecks": false,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@entities/*": ["src/entities/*"],
+      "@common/*": ["src/common/*"],
+      "@util/*": ["src/util/*"],
+      "@shared/*": ["src/shared/*"],
+      "@modules/*": ["src/modules/*"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "__tests__/**/*"
-  ]
+  "include": ["src/**/*", "__tests__/**/*"]
 }
