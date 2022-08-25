@@ -6,7 +6,7 @@ import { User } from '@entities/User';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') implements IAuthGuard {
-  public handleRequest(err: unknown, user: User): any {
+  public handleRequest(_err: unknown, user: User): any {
     return user;
   }
 
