@@ -11,7 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
-import * as multiStream from 'pino-multi-stream';
+// import * as multiStream from 'pino-multi-stream';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import configuration from './configuration';
@@ -20,7 +20,7 @@ import { AppController } from './app.controller';
 
 import { ensureCustomDir } from '@util/util';
 import { hostDataDirName } from '@util/config';
-import { AppLoggerMiddleware } from '@common/middleware/logger.middleware';
+// import { AppLoggerMiddleware } from '@common/middleware/logger.middleware';
 import { AuthModule } from '@modules/auth/auth.module';
 import { UserModule } from '@modules/user/user.module';
 import { ResourceModule } from '@modules/resource/resource.module';
@@ -52,10 +52,11 @@ const dbPath = ensureCustomDir(dataDir, 'db');
       inject: [ConfigService],
       useFactory: async (conf: ConfigService) => {
         return {
-          pinoHttp: [
-            pinoHttpOption(conf.get('NODE_ENV'), conf.get('log')),
-            multiStream.multistream(conf.get('streams')),
-          ],
+          // pinoHttp: [
+          //   pinoHttpOption(conf.get('NODE_ENV'), conf.get('log')),
+          //   multiStream.prettyStream(conf.get('streams')),
+          // ],
+          pinoHttp: pinoHttpOption(conf.get('NODE_ENV'), conf.get('log'))
         };
       },
     }),
@@ -105,7 +106,8 @@ export class AppModule implements NestModule, OnModuleInit {
   ) { }
 
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+    consumer.apply().forRoutes('*');
+    // consumer.apply(AppLoggerMiddleware).forRoutes('*');
   }
 
   async onModuleInit() {

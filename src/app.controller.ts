@@ -1,4 +1,4 @@
-import { Controller, Get, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, UseInterceptors, Logger } from '@nestjs/common';
 import * as ID from 'nodejs-unique-numeric-id-generator';
 
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
@@ -7,8 +7,12 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
+  constructor(private readonly logger: Logger) { }
+
   @Get('/')
+  @UseInterceptors(ResponseInterceptor)
   hello() {
+    this.logger.debug('Root')
     return 'Hello Nestjs Template!'
   }
 

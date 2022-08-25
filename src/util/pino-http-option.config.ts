@@ -6,6 +6,7 @@ export const pinoHttpOption = (
   envMode = 'development',
   log: any,
 ): pinoHttp.Options => {
+  console.error('envMode', envMode)
   return {
     customAttributeKeys: {
       // req: '请求信息',
@@ -13,7 +14,8 @@ export const pinoHttpOption = (
       // err: '错误信息',
       // responseTime: '响应时间（ms）',
     },
-    autoLogging: false,
+    autoLogging: true,
+    quietReqLogger: true,
     level: envMode === 'development' ? 'trace' : log.level,
     timestamp: pino.stdTimeFunctions.isoTime,
     customLogLevel(_req: IncomingMessage, res: ServerResponse, err: Error) {
@@ -25,6 +27,15 @@ export const pinoHttpOption = (
 
       return 'info';
     },
+    // Define a custom success message
+    customSuccessMessage: function (req, res) {
+      if (res.statusCode === 404) {
+        return 'resource not found'
+      }
+      return `${req.method} completed`
+    },
+    // Set to `false` to prevent standard serializers from being wrapped.
+    wrapSerializers: true,
     serializers: {
       req(req: {
         httpVersion: any;
@@ -33,11 +44,16 @@ export const pinoHttpOption = (
         query: any;
         body: any;
       }) {
-        req.httpVersion = req.raw.httpVersion;
-        req.params = req.raw.params;
-        req.query = req.raw.query;
-        req.body = req.raw.body;
-        return req;
+        const retVal = {
+          httpVersion: req.raw.httpVersion,
+          params: req.raw.params,
+          query: req.raw.query,
+          body: req.raw.body,
+        }
+        return retVal;
+      },
+      res(res: any) {
+        return res;
       },
       err(err: {
         params: any;
@@ -56,13 +72,15 @@ export const pinoHttpOption = (
         return { level: label };
       },
     },
-    transport: {
+    transport: envMode === 'development' ? {
       target: 'pino-pretty',
       options: {
         colorize: true,
         // singleLine: true,
-        translateTime: 'yyyy-mm-dd HH:MM:ss.l o'
+        levelFirst: true,
+        ignore: '',
+        translateTime: 'yyyy-mm-dd HH:MM:ss.l o',
       }
-    },
+    } : undefined,
   };
 };

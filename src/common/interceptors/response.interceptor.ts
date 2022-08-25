@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  Logger,
+  // Logger,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import * as R from 'ramda';
@@ -16,15 +16,19 @@ export interface Response<T> {
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
-  constructor(private readonly logger: Logger) { }
+  // constructor(private readonly logger: Logger) { }
 
   intercept(
     _context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response<T>> {
+    // const ctx = context.getArgs();
+
     return next.handle().pipe(
       map((data) => {
-        this.logger.verbose('res data: ', data);
+
+        // const { ip, method, originalUrl } = ctx[0];
+        // this.logger.verbose(`response ${method} ${originalUrl} from ${ip} `, data.data);
 
         if (R.has('code', data)) {
           return { data: '', code: (data as any).code, msg: (data as any).msg };
