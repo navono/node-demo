@@ -8,7 +8,7 @@ ws:
   port: 15675
 
 db:
-  sqlit: 'hmikit.db'
+  sqlite: 'hmikit.db'
 
 auth:
   jwtExpires: '8h'
