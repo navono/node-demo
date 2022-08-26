@@ -9,7 +9,6 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  // private mutex = new Mutex();
   private semaphore = new Semaphore(1);
 
   private mqttClient: MQTT.AsyncMqttClient
@@ -17,12 +16,11 @@ export class AppController {
   constructor(private readonly logger: Logger) {
     this.mqttClient = MQTT.connect('mqtt://localhost:1883');
 
-    this.mqttClient.on('connect', (packet: any) => {
-      console.error('packet', packet)
-      this.mqttClient.subscribe('supcon').then(val => {
-        this.logger.debug('recv mqtt ', val)
+    this.mqttClient.on('connect', () => {
+      this.mqttClient.subscribe('supcon').then(() => {
+        this.logger.debug('成功订阅主题 「supcon」');
       }).catch(reasone => {
-        this.logger.error('mqtt error', reasone)
+        this.logger.debug('订阅主题 「supcon」失败：', reasone);
       });
     });
   }
@@ -30,44 +28,19 @@ export class AppController {
   @Get('/')
   @UseInterceptors(ResponseInterceptor)
   async hello() {
-    const [semNumber, isRelease] = await this.semaphore.acquire();
-    this.logger.debug('semNumber', semNumber);
-
+    const [, isRelease] = await this.semaphore.acquire();
+    let recvMsg;
     this.mqttClient.on('message', (topic, message) => {
-
-      // message is Buffer
-      console.log(topic, message.toString());
+      this.logger.debug(topic, message.toString());
       this.semaphore.runExclusive(() => { Promise.resolve('10') });
-
+      recvMsg = message.toString();
       isRelease();
     });
 
     await this.mqttClient.publish('supcon.monitor.writetag', 'hello from nestjs');
-
     await this.semaphore.waitForUnlock();
-    // this.logger.debug('semaphore unlock');
 
-    // let taskCalls = 0;
-
-    // const awaitUnlockWrapper = async () => {
-    //   await this.semaphore.waitForUnlock();
-    //   taskCalls++;
-    // };
-
-    // const lock = this.semaphore.acquire();
-    // this.semaphore.acquire();
-
-    // awaitUnlockWrapper();
-    // awaitUnlockWrapper();
-    // await clock.tickAsync(0);
-
-    // // assert.strictEqual(taskCalls, 0);
-
-    // const [, releaser] = await lock;
-    // releaser();
-    // await clock.tickAsync(0);
-
-    return 'Hello Nestjs Template!'
+    return recvMsg;
   }
 
   @Get('id/getId')
