@@ -32,7 +32,15 @@ export default () => {
       logfile = path.join(logFileParsed.dir, logfile);
     }
 
-    const option = { filename: `${logfile}`, verbose: false, frequency: "custom", date_format: "YYYY-MM-DD-A", max_logs: '7d', size: "50k", extension: ".log" }
+    const option = {
+      filename: `${logfile}`,
+      verbose: false,
+      frequency: "custom",
+      date_format: "YYYY-MM-DD-A",
+      max_logs: logConf.maxFiles,
+      size: logConf.fileSize,
+      extension: logFileParsed.ext
+    };
     streams.push({
       level: logConf.level as PinoLevel,
       // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -35,13 +35,6 @@ const dbPath = ensureCustomDir(dataDir, 'db');
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: `${dbPath}/hmiKit.db`,
-      autoLoadEntities: true,
-      // logging: true,
-      synchronize: true,
-    }),
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       load: [configuration],
@@ -57,6 +50,19 @@ const dbPath = ensureCustomDir(dataDir, 'db');
           ],
         };
       },
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (conf: ConfigService) => {
+        return {
+          type: 'sqlite',
+          database: `${dbPath}/${conf.get('db.sqlite')}`,
+          autoLoadEntities: true,
+          // logging: true,
+          synchronize: true,
+        }
+      }
     }),
     ServeStaticModule.forRootAsync({
       imports: [ConfigModule],
