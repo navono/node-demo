@@ -1,7 +1,7 @@
 import { Controller, Get, UseInterceptors, Logger } from '@nestjs/common';
 import * as ID from 'nodejs-unique-numeric-id-generator';
 import * as MQTT from 'async-mqtt';
-import { Semaphore } from 'async-mutex';
+import { Semaphore, SemaphoreInterface, withTimeout } from 'async-mutex';
 
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { getUTCTimestamp } from '@util/util';
@@ -9,11 +9,13 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  private semaphore = new Semaphore(1);
+  private semaphore: SemaphoreInterface;
 
-  private mqttClient: MQTT.AsyncMqttClient
+  private mqttClient: MQTT.AsyncMqttClient;
 
   constructor(private readonly logger: Logger) {
+    this.semaphore = withTimeout(new Semaphore(1), 2000, new Error('Timeout'))
+
     this.mqttClient = MQTT.connect('mqtt://localhost:1883');
 
     this.mqttClient.on('connect', () => {
@@ -28,13 +30,15 @@ export class AppController {
   @Get('/')
   @UseInterceptors(ResponseInterceptor)
   async hello() {
-    const [, isRelease] = await this.semaphore.acquire();
+    const [, releaseSemaphore] = await this.semaphore.acquire();
+
+    setTimeout(() => releaseSemaphore(), 2000);
     let recvMsg;
     this.mqttClient.on('message', (topic, message) => {
       this.logger.debug(topic, message.toString());
       this.semaphore.runExclusive(() => { Promise.resolve('10') });
       recvMsg = message.toString();
-      isRelease();
+      releaseSemaphore();
     });
 
     await this.mqttClient.publish('supcon.monitor.writetag', 'hello from nestjs');
