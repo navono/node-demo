@@ -1,7 +1,7 @@
 import { Controller, Get, UseInterceptors, Logger } from '@nestjs/common';
 import * as ID from 'nodejs-unique-numeric-id-generator';
 import * as MQTT from 'async-mqtt';
-import { Semaphore, SemaphoreInterface, withTimeout } from 'async-mutex';
+import { Semaphore } from 'async-mutex';
 
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { getUTCTimestamp } from '@util/util';
@@ -9,13 +9,11 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  private semaphore: SemaphoreInterface;
+  private semaphore = new Semaphore(1);
 
   private mqttClient: MQTT.AsyncMqttClient;
 
   constructor(private readonly logger: Logger) {
-    this.semaphore = withTimeout(new Semaphore(1), 2000, new Error('Timeout'))
-
     this.mqttClient = MQTT.connect('mqtt://localhost:1883');
 
     this.mqttClient.on('connect', () => {
