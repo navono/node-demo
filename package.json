@@ -32,6 +32,7 @@
     "aedes": "0.47.0",
     "aedes-server-factory": "0.2.1",
     "argon2": "0.29.1",
+    "async-mqtt": "^2.6.2",
     "async-mutex": "0.3.2",
     "body-parser": "1.20.0",
     "class-transformer": "0.5.1",
