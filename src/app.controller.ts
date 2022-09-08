@@ -1,5 +1,6 @@
 import { Controller, Get, UseInterceptors, Logger } from '@nestjs/common';
 import * as ID from 'nodejs-unique-numeric-id-generator';
+import NodeVxCollector from 'nodevxcollector';
 
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { getUTCTimestamp } from '@util/util';
@@ -7,13 +8,27 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  constructor(private readonly logger: Logger) { }
+  constructor(private readonly logger: Logger) {
+  }
 
   @Get('/')
   @UseInterceptors(ResponseInterceptor)
   hello() {
-    this.logger.debug('Root')
-    return 'Hello Nestjs Template!'
+    try {
+      this.logger.debug('Root');
+
+      const collector = new NodeVxCollector('./dist/VxCollector');
+      collector.init();
+      collector.subscribe((val: string) => {
+        console.error('sub recv: ', val);
+      })
+
+      return 'Hello Nestjs Template!'
+    } catch (error) {
+      console.error('HTTP request failed.', error);
+    }
+
+    return 'error!';
   }
 
   @Get('id/getId')

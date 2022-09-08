@@ -44,8 +44,8 @@ interface ImportTransactionInput {
 
 @Injectable()
 export class ImportTransaction extends BaseTransaction<
-ImportTransactionInput,
-Resource
+  ImportTransactionInput,
+  Resource
 > {
   private resourcePath = '';
 
@@ -216,7 +216,7 @@ export class ResourceService {
       if (stats.isFile()) {
         const parsedFilename = path.parse(filename);
         if (parsedFilename.ext === compressPrefix) {
-          const zip = new Zip(filePath);
+          const zip = new Zip.default(filePath);
           zip.getEntries().forEach((entry) => {
             entry.entryName = iconv.decode(entry.rawEntryName, 'gbk');
           });
