@@ -4,8 +4,12 @@ http:
   jsonLimit: '50mb'
   bodyLimit: '50mb'
 
-ws:
+mqtt:
+  host: 'ws://localhost'
   port: 15675
+  path: '/ws'
+  topics:
+    realtimeDataTopic: 'supcon.hmikit.realtime.sub'
 
 db:
   sqlite: 'hmikit.db'

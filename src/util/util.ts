@@ -1,3 +1,4 @@
+import { networkInterfaces } from 'os';
 import * as path from 'path';
 import * as fse from 'fs-extra';
 import { HttpException } from '@nestjs/common';
@@ -81,4 +82,19 @@ export async function dbTransaction<T>(
   } finally {
     await queryRunner.release();
   }
+}
+
+export const getIPAdress = (): string => {
+  const interfaces = networkInterfaces();
+  for (const devName in interfaces) {
+    const iface = interfaces[devName];
+    for (let i = 0; i < iface.length; i++) {
+      const alias = iface[i];
+      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
+        return alias.address;
+      }
+    }
+  }
+
+  return `unknown-ip-${Math.random().toString(16).substring(2, 8)}`
 }

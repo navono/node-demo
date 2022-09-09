@@ -10,3 +10,5 @@ export const picResourcePrefix = 'pic://';
 export const tagGroupResourcePrefix = 'point://';
 
 export const toolbarLayoutName = 'toolbarLayout';
+
+export const mqttClientService = "MQTT_CLIENT";
