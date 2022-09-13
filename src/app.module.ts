@@ -6,12 +6,14 @@ import {
   NestModule,
   OnModuleInit,
 } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import * as multiStream from 'pino-multi-stream';
 
-import { MQTTModule } from '@modules/mqtt/mqtt.module';
 import { pinoHttpOption } from '@util/pino-http-option.config';
+import { AllExceptionsFilter } from '@common/filters/all-exceptions.filter';
+import { MQTTModule } from '@modules/mqtt/mqtt.module';
 
 import configuration from './configuration';
 
@@ -37,6 +39,10 @@ import configuration from './configuration';
   controllers: [],
   providers: [
     Logger,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter
+    }
   ],
 })
 export class AppModule implements NestModule, OnModuleInit {

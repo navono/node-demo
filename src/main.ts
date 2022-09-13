@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
@@ -14,6 +15,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const logger = app.get(Logger);
     app.useLogger(logger);
+    app.useGlobalPipes(new ValidationPipe());
 
     // 动态设置 topic
     app.get(MQTTTopicDecoratorService).processTopicDecorators([MQTTController]);
@@ -29,9 +31,8 @@ async function bootstrap() {
         clientId: `vxcollector-adapter_${getIPAdress()}_receiver`,
         username: 'vxsip',
         password: 'vxsip'
-      }
-    });
-
+      },
+    }, { inheritAppConfig: true });
 
     app.startAllMicroservices();
   } catch (error) {

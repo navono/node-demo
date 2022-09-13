@@ -1,9 +1,15 @@
-import { Catch, ArgumentsHost } from '@nestjs/common';
+import { HttpException, Catch, ArgumentsHost, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
-    super.catch(exception, host);
+  constructor(private logger: Logger) {
+    super()
+  }
+
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const rsp = exception.getResponse() as any;
+    const args = host.getArgByIndex(0);
+    this.logger.error(`Request invalid: ${JSON.stringify(args)} with ${JSON.stringify(rsp.message)}`);
   }
 }
