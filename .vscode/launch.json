@@ -29,6 +29,7 @@
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ],
+      "runtimeExecutable": "/home/ping/.nvm/versions/node/v16.17.1/bin/node",
       "outputCapture": "std"
     },
     {

@@ -1,4 +1,5 @@
 import * as Excel from 'exceljs';
+import * as R from 'ramda';
 import { Controller, Get, UseInterceptors, Logger } from '@nestjs/common';
 import * as ID from 'nodejs-unique-numeric-id-generator';
 
@@ -22,11 +23,13 @@ export class AppController {
 
       // 人员名单
       const personWB = new Excel.Workbook();
-      await personWB.xlsx.readFile('D:\\data\\OneDrive\\文档\\zhao\\person2.xlsx');
+      // await personWB.xlsx.readFile('D:\\data\\OneDrive\\文档\\zhao\\person2.xlsx');
+      await personWB.xlsx.readFile('/mnt/d/data/OneDrive/文档/zhao/person2.xlsx');
       const personWS = personWB.getWorksheet('sheet1');
 
       // 目标文件
-      const tableFilepath = 'D:\\data\\OneDrive\\文档\\zhao\\table.xlsx';
+      // const tableFilepath = 'D:\\data\\OneDrive\\文档\\zhao\\table.xlsx';
+      const tableFilepath = '/mnt/d/data/OneDrive/文档/zhao/table.xlsx';
       const tableWB = new Excel.Workbook();
       await tableWB.xlsx.readFile(tableFilepath);
 
@@ -44,7 +47,7 @@ export class AppController {
         }
         personCount += 1;
 
-        let currentPersonSheet;
+        let currentPersonSheet: Excel.Worksheet;
         let contractStart;
         row.eachCell((cell, cellNumber) => {
           if (cellNumber === 1) {
@@ -56,7 +59,13 @@ export class AppController {
           if (cellNumber === 2) {
             // 姓名
             currentPersonName = cellData;
-            currentPersonSheet = tableWB.addWorksheet(currentPersonName);
+
+            const sheetExistIdx = R.findIndex(R.propEq('name', currentPersonName))(tableWB.worksheets);
+            if (sheetExistIdx === -1) {
+              currentPersonSheet = tableWB.addWorksheet(currentPersonName);
+            } else {
+              currentPersonSheet = tableWB.addWorksheet(`${currentPersonName}-${rowNumber}`);
+            }
 
             templateWS.eachRow((row, rowNumber) => {
               const currentPersonNewRow = currentPersonSheet.getRow(rowNumber);
@@ -68,7 +77,9 @@ export class AppController {
               })
             });
 
-            currentPersonSheet.getRow(3).getCell('C3').value = cellData;
+            const nameCell = currentPersonSheet.getCell('C3');
+            nameCell.value = cellData;
+            this.setCellStyle(nameCell);
             return;
           }
 
@@ -79,19 +90,37 @@ export class AppController {
           if (cellNumber === 3) {
             // 证件类型
             if (currentPersonSheet) {
-              currentPersonSheet.getRow(4).getCell('C4').value = cellData;
+              const idTypeCell = currentPersonSheet.getCell('C4');
+              idTypeCell.value = cellData;
+              this.setCellStyle(idTypeCell);
             }
           }
           if (cellNumber === 4) {
             // 证件号
             if (currentPersonSheet) {
-              currentPersonSheet.getRow(4).getCell('E5').value = cellData;
+              const idCell = currentPersonSheet.getCell('E4');
+              idCell.value = cellData;
+              this.setCellStyle(idCell);
             }
           }
           if (cellNumber === 5) {
             // 合同金额
             if (currentPersonSheet) {
-              currentPersonSheet.getRow(5).getCell('C5').value = cellData;
+              const contractCountCell = currentPersonSheet.getCell('C5');
+              contractCountCell.value = cellData;
+              this.setCellStyle(contractCountCell);
+
+              const borrowCountCell = currentPersonSheet.getCell('E5');
+              borrowCountCell.value = '1';
+              this.setCellStyle(borrowCountCell);
+
+              const checkCell = currentPersonSheet.getCell('C9');
+              checkCell.value = cellData;
+              this.setCellStyle(checkCell);
+
+              const checkCountCell = currentPersonSheet.getCell('E9');
+              checkCountCell.value = '1';
+              this.setCellStyle(checkCountCell);
             }
           }
           if (cellNumber === 6) {
@@ -101,11 +130,35 @@ export class AppController {
           if (cellNumber === 7) {
             // 合同到期日
             if (currentPersonSheet) {
-              currentPersonSheet.getRow(7).getCell('C7').value = `${contractStart} 至 ${cellData}`;
+              const contractDataCell = currentPersonSheet.getCell('C7');
+              contractDataCell.value = `${contractStart} 至 ${cellData}`;
+              this.setCellStyle(contractDataCell);
             }
           }
-
-          console.error(rowNumber, cellNumber, cell.value);
+          if (cellNumber === 8) {
+            // 住址
+            if (currentPersonSheet) {
+              const addrCell = currentPersonSheet.getCell('G3');
+              const result = (cell.value as any).result;
+              if (result && typeof result === 'string') {
+                const cellData = (cell.value as any).result.toString();
+                addrCell.value = cellData;
+                this.setCellStyle(addrCell);
+              }
+            }
+          }
+          if (cellNumber === 9) {
+            // 用途
+            if (currentPersonSheet) {
+              const useCell = currentPersonSheet.getCell('E7');
+              const result = (cell.value as any).result;
+              if (result && typeof result === 'string') {
+                const cellData = (cell.value as any).result.toString();
+                useCell.value = cellData;
+                this.setCellStyle(useCell);
+              }
+            }
+          }
         })
       });
 
@@ -117,6 +170,11 @@ export class AppController {
     }
 
     return 'error!';
+  }
+
+  private setCellStyle = (cell: Excel.Cell) => {
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.font = { size: 12 };
   }
 
   @Get('id/getId')
