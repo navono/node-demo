@@ -34,6 +34,7 @@ export class AppController {
       const templateWS = tableWB.getWorksheet('template');
 
       let personCount = 0;
+      let currentPersonName = '';
       personWS.eachRow((row, rowNumber) => {
         // const currentRow = testWS.getRow(rowNumber);
         if (personCount < 2) {
@@ -47,14 +48,15 @@ export class AppController {
         let contractStart;
         row.eachCell((cell, cellNumber) => {
           if (cellNumber === 1) {
+            // 序号
             return;
           }
 
           const cellData = cell.value.toString();
           if (cellNumber === 2) {
             // 姓名
-            const personName = cellData;
-            currentPersonSheet = tableWB.addWorksheet(personName);
+            currentPersonName = cellData;
+            currentPersonSheet = tableWB.addWorksheet(currentPersonName);
 
             templateWS.eachRow((row, rowNumber) => {
               const currentPersonNewRow = currentPersonSheet.getRow(rowNumber);
@@ -66,9 +68,14 @@ export class AppController {
               })
             });
 
-            // currentPersonSheet.getRow(3).getCell('C3').value = cellData;
+            currentPersonSheet.getRow(3).getCell('C3').value = cellData;
             return;
           }
+
+          if (!currentPersonSheet) {
+            currentPersonSheet = tableWB.getWorksheet(currentPersonName);
+          }
+
           if (cellNumber === 3) {
             // 证件类型
             if (currentPersonSheet) {
