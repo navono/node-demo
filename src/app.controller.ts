@@ -1,6 +1,6 @@
+import { interval } from 'rxjs';
 import { Controller, Get, UseInterceptors, Logger } from '@nestjs/common';
 import * as ID from 'nodejs-unique-numeric-id-generator';
-import NodeVxCollector from 'nodevxcollector';
 
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { getUTCTimestamp } from '@util/util';
@@ -9,6 +9,12 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller()
 export class AppController {
   constructor(private readonly logger: Logger) {
+
+    const numbers = interval(500);
+    const subscription = numbers.subscribe(x => console.error('Next: ', x));
+    setTimeout(() => {
+      subscription.unsubscribe();
+    }, 5000);
   }
 
   @Get('/')
@@ -16,12 +22,6 @@ export class AppController {
   hello() {
     try {
       this.logger.debug('Root');
-
-      const collector = new NodeVxCollector('./dist/VxCollector');
-      collector.init();
-      collector.subscribe((val: string) => {
-        console.error('sub recv: ', val);
-      })
 
       return 'Hello Nestjs Template!'
     } catch (error) {
