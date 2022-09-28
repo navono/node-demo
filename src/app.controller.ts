@@ -22,12 +22,13 @@ export class AppController {
 
       // 人员名单
       const personWB = new Excel.Workbook();
-      await personWB.xlsx.readFile('D:\\zhao\\person2.xlsx');
+      await personWB.xlsx.readFile('D:\\data\\OneDrive\\文档\\zhao\\person2.xlsx');
       const personWS = personWB.getWorksheet('sheet1');
 
       // 目标文件
+      const tableFilepath = 'D:\\data\\OneDrive\\文档\\zhao\\table.xlsx';
       const tableWB = new Excel.Workbook();
-      await tableWB.xlsx.readFile('D:\\zhao\\table.xlsx');
+      await tableWB.xlsx.readFile(tableFilepath);
 
       // 目标模板 sheet 页
       const templateWS = tableWB.getWorksheet('template');
@@ -101,7 +102,7 @@ export class AppController {
         })
       });
 
-      tableWB.xlsx.writeFile('D:\\zhao\\table.xlsx');
+      tableWB.xlsx.writeFile(tableFilepath);
 
       return 'Hello Nestjs Template!'
     } catch (error) {
