@@ -13,7 +13,7 @@ import * as multiStream from 'pino-multi-stream';
 
 import { pinoHttpOption } from '@util/pino-http-option.config';
 import { AllExceptionsFilter } from '@common/filters/all-exceptions.filter';
-import { MQTTModule } from '@modules/mqtt/mqtt.module';
+import { MQTTModule } from '@/modules/mqtt-main/mqtt.module';
 
 import configuration from './configuration';
 
