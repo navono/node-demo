@@ -23,13 +23,13 @@ export class AppController {
 
       // 人员名单
       const personWB = new Excel.Workbook();
-      // await personWB.xlsx.readFile('D:\\data\\OneDrive\\文档\\zhao\\person2.xlsx');
-      await personWB.xlsx.readFile('/mnt/d/data/OneDrive/文档/zhao/person2.xlsx');
+      await personWB.xlsx.readFile('C:\\Users\\supcon\\OneDrive\\文档\\zhao\\person2.xlsx');
+      // await personWB.xlsx.readFile('/mnt/d/data/OneDrive/文档/zhao/person2.xlsx');
       const personWS = personWB.getWorksheet('sheet1');
 
       // 目标文件
-      // const tableFilepath = 'D:\\data\\OneDrive\\文档\\zhao\\table.xlsx';
-      const tableFilepath = '/mnt/d/data/OneDrive/文档/zhao/table.xlsx';
+      const tableFilepath = 'C:\\Users\\supcon\\OneDrive\\文档\\zhao\\table.xlsx';
+      // const tableFilepath = '/mnt/d/data/OneDrive/文档/zhao/table.xlsx';
       const tableWB = new Excel.Workbook();
       await tableWB.xlsx.readFile(tableFilepath);
 
@@ -69,10 +69,19 @@ export class AppController {
 
             templateWS.eachRow((row, rowNumber) => {
               const currentPersonNewRow = currentPersonSheet.getRow(rowNumber);
+              currentPersonNewRow.height = templateWS.getRow(rowNumber).height;
+
+              // currentPersonNewRow.height = 
               row.eachCell((cell, colNumber) => {
                 const newCell = currentPersonNewRow.getCell(colNumber);
                 for (const prop in cell) {
                   newCell[prop] = cell[prop];
+                }
+                cell.border = {
+                  top: { style: "thin" },
+                  left: { style: "thin" },
+                  bottom: { style: "thin" },
+                  right: { style: "thin" }
                 }
               })
             });
@@ -80,6 +89,16 @@ export class AppController {
             const nameCell = currentPersonSheet.getCell('C3');
             nameCell.value = cellData;
             this.setCellStyle(nameCell);
+
+            currentPersonSheet.getColumn('C').width = 15;
+            const g6Cell = currentPersonSheet.getCell('G6');
+            this.setCellStyle(g6Cell);
+
+            const e6Cell = currentPersonSheet.getCell('E6');
+            this.setCellStyle(e6Cell);
+
+            const i6Cell = currentPersonSheet.getCell('I6');
+            this.setCellStyle(i6Cell);
             return;
           }
 
@@ -173,8 +192,14 @@ export class AppController {
   }
 
   private setCellStyle = (cell: Excel.Cell) => {
-    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
     cell.font = { size: 12 };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" }
+    }
   }
 
   @Get('id/getId')
