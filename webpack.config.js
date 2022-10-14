@@ -48,7 +48,7 @@ module.exports = {
         const lazyImports = [
           '@nestjs/microservices',
           '@nestjs/microservices/microservices-module',
-          '@nestjs/websockets/socket-module',
+          // '@nestjs/websockets/socket-module',
           'cache-manager',
           'class-validator',
           'class-transformer',
