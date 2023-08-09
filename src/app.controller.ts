@@ -191,6 +191,41 @@ export class AppController {
     return 'error!';
   }
 
+  @Get('num')
+  @UseInterceptors(ResponseInterceptor)
+  async filterPersonNum() {
+    this.logger.debug('过滤填充号码');
+
+    const personWB = new Excel.Workbook();
+    try {
+      const filepath = 'C:\\Users\\ping\\OneDrive\\文档\\zhao\\person_number.xlsx'
+      const outfilepath = 'C:\\Users\\ping\\OneDrive\\文档\\zhao\\person_number2.xlsx';
+      await personWB.xlsx.readFile(filepath);
+      const personWithoutNumberWS = personWB.getWorksheet('Sheet1');
+      const personWithNumberWS = personWB.getWorksheet('Sheet2');
+
+      personWithoutNumberWS.eachRow((row, _rowNumber) => {
+        const destName = row.getCell(1).value.toString().trim();
+        this.logger.debug("目标名称: ", destName);
+
+        personWithNumberWS.eachRow((numRow, _numRowNumber) => {
+          const numName = numRow.getCell(1).value;
+          if (destName === numName.toString()) {
+            const num = numRow.getCell(2).value;
+            this.logger.debug(`填充目标名称: ${destName} ${num}`);
+            row.getCell(2).value = num;
+            return;
+          }
+        });
+      });
+
+      personWB.xlsx.writeFile(outfilepath);
+
+    } catch (error) {
+      console.error('HTTP request failed.', error);
+    }
+  }
+
   private setCellStyle = (cell: Excel.Cell) => {
     cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
     cell.font = { size: 12 };
